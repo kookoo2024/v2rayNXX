@@ -317,8 +317,34 @@ public partial class ProfilesViewModel : MyReactiveObject
         await Task.CompletedTask;
     }
 
+    private string? _liveSpeedIndexId;
+
+    /// <summary>
+    /// Custom build: show the real-time speed of the active node in its "速度" cell.
+    /// </summary>
+    private void UpdateLiveSpeed(ServerSpeedItem update)
+    {
+        try
+        {
+            var indexId = update.IndexId.IsNullOrEmpty() ? _config.IndexId : update.IndexId;
+            if (_liveSpeedIndexId != null && _liveSpeedIndexId != indexId)
+            {
+                var old = ProfileItems.FirstOrDefault(it => it.IndexId == _liveSpeedIndexId);
+                old?.SpeedVal = string.Empty;
+            }
+            _liveSpeedIndexId = indexId;
+            var item = ProfileItems.FirstOrDefault(it => it.IndexId == indexId);
+            item?.SpeedVal = $"↓ {Utils.HumanFy(update.ProxyDown)}/s";
+        }
+        catch
+        {
+        }
+    }
+
     public async Task UpdateStatistics(ServerSpeedItem update)
     {
+        UpdateLiveSpeed(update);
+
         if (!_config.GuiItem.EnableStatistics
             || (update.ProxyUp + update.ProxyDown) <= 0
             || DateTime.Now.Second % 3 != 0)

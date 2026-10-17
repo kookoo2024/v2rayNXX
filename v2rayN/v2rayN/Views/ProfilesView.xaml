@@ -324,7 +324,7 @@
                         </DataGridTextColumn.ElementStyle>
                     </base:MyDGTextColumn>
                     <base:MyDGTextColumn
-                        Width="80"
+                        Width="95"
                         Binding="{Binding SpeedVal}"
                         ExName="SpeedVal"
                         Header="{x:Static resx:ResUI.LvTestSpeed}">
