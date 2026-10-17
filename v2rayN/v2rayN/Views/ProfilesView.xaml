@@ -301,26 +301,6 @@
                         ExName="Remarks"
                         Header="{x:Static resx:ResUI.LvRemarks}" />
                     <base:MyDGTextColumn
-                        Width="120"
-                        Binding="{Binding Address}"
-                        ExName="Address"
-                        Header="{x:Static resx:ResUI.LvAddress}" />
-                    <base:MyDGTextColumn
-                        Width="60"
-                        Binding="{Binding Port}"
-                        ExName="Port"
-                        Header="{x:Static resx:ResUI.LvPort}" />
-                    <base:MyDGTextColumn
-                        Width="100"
-                        Binding="{Binding Network}"
-                        ExName="Network"
-                        Header="{x:Static resx:ResUI.LvTransportProtocol}" />
-                    <base:MyDGTextColumn
-                        Width="100"
-                        Binding="{Binding StreamSecurity}"
-                        ExName="StreamSecurity"
-                        Header="{x:Static resx:ResUI.LvTLS}" />
-                    <base:MyDGTextColumn
                         Width="100"
                         Binding="{Binding SubRemarks}"
                         ExName="SubRemarks"
@@ -375,12 +355,6 @@
                         Binding="{Binding TodayDown}"
                         ExName="TodayDown"
                         Header="{x:Static resx:ResUI.LvTodayDownloadDataAmount}" />
-                    <base:MyDGTextColumn
-                        x:Name="colTotalUp"
-                        Width="100"
-                        Binding="{Binding TotalUp}"
-                        ExName="TotalUp"
-                        Header="{x:Static resx:ResUI.LvTotalUploadDataAmount}" />
                     <base:MyDGTextColumn
                         x:Name="colTotalDown"
                         Width="100"

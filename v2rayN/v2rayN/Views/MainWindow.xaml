@@ -244,8 +244,8 @@
                                     Header="{x:Static resx:ResUI.menuOpenTheFileLocation}" />
                             </MenuItem>
                         </Menu>
-                        <Separator />
-                        <Menu Margin="0,1" Style="{StaticResource ToolbarMenu}">
+                        <Separator Visibility="Collapsed" />
+                        <Menu Visibility="Collapsed" Margin="0,1" Style="{StaticResource ToolbarMenu}">
                             <MenuItem
                                 x:Name="menuHelp"
                                 Padding="{StaticResource MarginLeftRight8}"
@@ -263,8 +263,8 @@
                                 <Separator Margin="-40,5" />
                             </MenuItem>
                         </Menu>
-                        <Separator />
-                        <Menu Margin="0,1" Style="{StaticResource ToolbarMenu}">
+                        <Separator Visibility="Collapsed" />
+                        <Menu Visibility="Collapsed" Margin="0,1" Style="{StaticResource ToolbarMenu}">
                             <MenuItem
                                 x:Name="menuReload"
                                 Padding="{StaticResource MarginLeftRight8}"
@@ -280,8 +280,8 @@
                                 </MenuItem.Header>
                             </MenuItem>
                         </Menu>
-                        <Separator />
-                        <Menu Margin="0,1" Style="{StaticResource ToolbarMenu}">
+                        <Separator Visibility="Collapsed" />
+                        <Menu Visibility="Collapsed" Margin="0,1" Style="{StaticResource ToolbarMenu}">
                             <MenuItem
                                 x:Name="menuPromotion"
                                 Padding="{StaticResource MarginLeftRight8}"
