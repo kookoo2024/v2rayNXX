@@ -59,7 +59,7 @@
 
                 <TextBox
                     x:Name="txtServerFilter"
-                    Width="200"
+                    Width="140"
                     Margin="{StaticResource MarginLeftRight4}"
                     VerticalContentAlignment="Center"
                     materialDesign:HintAssist.Hint="{x:Static resx:ResUI.MsgServerTitle}"
@@ -111,7 +111,7 @@
                 GridLinesVisibility="All"
                 HeadersVisibility="All"
                 IsReadOnly="True"
-                RowHeaderWidth="40"
+                RowHeaderWidth="16"
                 Style="{StaticResource DefDataGrid}">
                 <DataGrid.InputBindings>
                     <KeyBinding Command="ApplicationCommands.NotACommand" Gesture="Ctrl+C" />
@@ -291,7 +291,7 @@
                 </DataGrid.Resources>
                 <DataGrid.Columns>
                     <base:MyDGTextColumn
-                        Width="80"
+                        Width="70"
                         Binding="{Binding ConfigType}"
                         ExName="ConfigType"
                         Header="{x:Static resx:ResUI.LvServiceType}" />
@@ -311,7 +311,7 @@
                         ExName="FavInfo"
                         Header="{x:Static resx:ResUI.LvFavInfo}" />
                     <base:MyDGTextColumn
-                        Width="100"
+                        Width="80"
                         Binding="{Binding DelayVal}"
                         ExName="DelayVal"
                         Header="{x:Static resx:ResUI.LvTestDelay}"
@@ -324,7 +324,7 @@
                         </DataGridTextColumn.ElementStyle>
                     </base:MyDGTextColumn>
                     <base:MyDGTextColumn
-                        Width="100"
+                        Width="80"
                         Binding="{Binding SpeedVal}"
                         ExName="SpeedVal"
                         Header="{x:Static resx:ResUI.LvTestSpeed}">
@@ -334,33 +334,6 @@
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </base:MyDGTextColumn>
-
-                    <base:MyDGTextColumn
-                        x:Name="colTodayUp"
-                        Width="100"
-                        Binding="{Binding TodayUp}"
-                        ExName="TodayUp"
-                        Header="{x:Static resx:ResUI.LvTodayUploadDataAmount}" />
-
-                    <base:MyDGTextColumn
-                        x:Name="colIpInfo"
-                        Width="100"
-                        Binding="{Binding IpInfo}"
-                        ExName="IpInfo"
-                        Header="{x:Static resx:ResUI.LvTestIpInfo}" />
-
-                    <base:MyDGTextColumn
-                        x:Name="colTodayDown"
-                        Width="100"
-                        Binding="{Binding TodayDown}"
-                        ExName="TodayDown"
-                        Header="{x:Static resx:ResUI.LvTodayDownloadDataAmount}" />
-                    <base:MyDGTextColumn
-                        x:Name="colTotalDown"
-                        Width="100"
-                        Binding="{Binding TotalDown}"
-                        ExName="TotalDown"
-                        Header="{x:Static resx:ResUI.LvTotalDownloadDataAmount}" />
                 </DataGrid.Columns>
             </DataGrid>
         </DockPanel>

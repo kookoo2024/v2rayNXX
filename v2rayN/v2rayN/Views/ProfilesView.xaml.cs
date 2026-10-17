@@ -41,6 +41,9 @@ public partial class ProfilesView
         {
             this.OneWayBind(ViewModel, vm => vm.ProfileItems, v => v.lstProfiles.ItemsSource).DisposeWith(disposables);
             this.Bind(ViewModel, vm => vm.SelectedProfile, v => v.lstProfiles.SelectedItem).DisposeWith(disposables);
+            this.WhenAnyValue(v => v.ViewModel.SelectedSub)
+                .Subscribe(_ => Dispatcher.BeginInvoke(UpdateGroupColumns, DispatcherPriority.Background))
+                .DisposeWith(disposables);
 
             this.OneWayBind(ViewModel, vm => vm.SubItems, v => v.lstGroup.ItemsSource).DisposeWith(disposables);
             this.Bind(ViewModel, vm => vm.SelectedSub, v => v.lstGroup.SelectedItem).DisposeWith(disposables);
@@ -325,13 +328,21 @@ public partial class ProfilesView
                 return;
             }
             double cols = 0;
-            foreach (var c in lstProfiles.Columns)
+            double groupSlot = 0;
+            foreach (var c in lstProfiles.Columns.Cast<MyDGTextColumn>())
             {
+                if (c.ExName is "FavInfo" or "SubRemarks")
+                {
+                    // only one of these shows at a time; reserve the wider one so the window does not jump
+                    groupSlot = Math.Max(groupSlot, c.Width.IsAbsolute ? c.Width.Value : c.ActualWidth);
+                    continue;
+                }
                 if (c.Visibility == Visibility.Visible)
                 {
                     cols += c.ActualWidth;
                 }
             }
+            cols += groupSlot;
             if (cols <= 0 || lstProfiles.ActualWidth <= 0 || win.ActualWidth <= 0)
             {
                 return;
@@ -341,8 +352,40 @@ public partial class ProfilesView
             target = Math.Max(win.MinWidth, Math.Min(target, SystemParameters.WorkArea.Width));
             var center = win.Left + (win.ActualWidth / 2);
             win.Width = target;
+            if (win.Height > 600)
+            {
+                var top = win.Top + ((win.ActualHeight - 560) / 2);
+                win.Height = 560;
+                win.Top = Math.Max(SystemParameters.WorkArea.Top, top);
+            }
             win.Left = Math.Max(SystemParameters.WorkArea.Left, Math.Min(center - (target / 2), SystemParameters.WorkArea.Right - target));
             _windowFitted = true;
+        }
+        catch (Exception ex)
+        {
+            Logging.SaveLog(_tag, ex);
+        }
+    }
+
+    /// <summary>
+    /// Custom build: "来源/收藏日期" only in 我的收藏, "订阅" only in 全部 (where it is meaningful).
+    /// </summary>
+    private void UpdateGroupColumns()
+    {
+        try
+        {
+            var subId = ViewModel?.SelectedSub?.Remarks.IsNullOrEmpty() == false ? ViewModel.SelectedSub.Id : _config.SubIndexId;
+            foreach (var c in lstProfiles.Columns.Cast<MyDGTextColumn>())
+            {
+                if (c.ExName == "FavInfo")
+                {
+                    c.Visibility = subId == ConfigHandler.FavSubId ? Visibility.Visible : Visibility.Collapsed;
+                }
+                else if (c.ExName == "SubRemarks")
+                {
+                    c.Visibility = subId.IsNullOrEmpty() ? Visibility.Visible : Visibility.Collapsed;
+                }
+            }
         }
         catch (Exception ex)
         {

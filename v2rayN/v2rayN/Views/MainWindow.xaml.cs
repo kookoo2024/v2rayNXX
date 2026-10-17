@@ -336,7 +336,8 @@ public partial class MainWindow
                 gridMain.ColumnDefinitions[0].Width = new GridLength(_config.UiItem.MainGirdHeight1, GridUnitType.Star);
                 gridMain.ColumnDefinitions[2].Width = new GridLength(_config.UiItem.MainGirdHeight2, GridUnitType.Star);
             }
-            else if (_config.UiItem.MainGirdOrientation == EGirdOrientation.Vertical)
+            else if (_config.UiItem.MainGirdOrientation == EGirdOrientation.Vertical
+                     && _config.UiItem.MainGirdHeight1 >= _config.UiItem.MainGirdHeight2 * 3)
             {
                 gridMain1.RowDefinitions[0].Height = new GridLength(_config.UiItem.MainGirdHeight1, GridUnitType.Star);
                 gridMain1.RowDefinitions[2].Height = new GridLength(_config.UiItem.MainGirdHeight2, GridUnitType.Star);

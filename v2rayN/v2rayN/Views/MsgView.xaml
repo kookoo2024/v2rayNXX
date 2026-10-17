@@ -16,6 +16,7 @@
     <DockPanel Margin="{StaticResource Margin4}">
         <WrapPanel
             Margin="{StaticResource Margin8}"
+            Visibility="Collapsed"
             VerticalAlignment="Center"
             DockPanel.Dock="Top"
             Orientation="Horizontal">

@@ -11,8 +11,8 @@
     xmlns:view="clr-namespace:v2rayN.Views"
     xmlns:vms="clr-namespace:ServiceLib.ViewModels;assembly=ServiceLib"
     Title="v2rayN"
-    Width="1200"
-    Height="800"
+    Width="760"
+    Height="560"
     MinWidth="560"
     x:TypeArguments="vms:MainWindowViewModel"
     Icon="/Resources/v2rayN.ico"
@@ -357,9 +357,9 @@
                     </Grid>
                     <Grid x:Name="gridMain1" Visibility="Collapsed">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="1*" />
-                            <RowDefinition Height="10" />
-                            <RowDefinition Height="1*" />
+                            <RowDefinition Height="6*" />
+                            <RowDefinition Height="6" />
+                            <RowDefinition Height="1*" MinHeight="60" />
                         </Grid.RowDefinitions>
                         <ContentControl x:Name="tabProfiles1" Grid.Row="0" />
                         <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" />
