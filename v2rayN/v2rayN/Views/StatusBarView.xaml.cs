@@ -13,6 +13,7 @@ public partial class StatusBarView
 
         menuExit.Click += menuExit_Click;
         menuToggleSpeedFloat.Click += (_, _) => SpeedFloatWindow.Toggle();
+        menuFavorites.SubmenuOpened += MenuFavorites_SubmenuOpened;
         Loaded += (_, _) => SpeedFloatWindow.ShowDefault();
         txtRunningServerDisplay.PreviewMouseDown += txtRunningInfoDisplay_MouseDoubleClick;
         txtRunningInfoDisplay.PreviewMouseDown += txtRunningInfoDisplay_MouseDoubleClick;

@@ -226,6 +226,12 @@
                         Header="{x:Static resx:ResUI.menuCopyProxyCmdToClipboard}" />
                     <Separator />
                     <MenuItem
+                        x:Name="menuFavorites"
+                        Height="{StaticResource MenuItemHeight}"
+                        Header="★ 我的收藏">
+                        <MenuItem Header="（加载中…）" IsEnabled="False" />
+                    </MenuItem>
+                    <MenuItem
                         x:Name="menuToggleSpeedFloat"
                         Height="{StaticResource MenuItemHeight}"
                         Header="{x:Static resx:ResUI.menuToggleSpeedFloat}" />

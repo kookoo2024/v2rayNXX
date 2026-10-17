@@ -64,7 +64,7 @@ public partial class ProfilesViewModel
         return lstSelected;
     }
 
-    private async Task WatchUserTest(Task task)
+    private async Task WatchUserTest(Task task, bool sortByDelay)
     {
         _userTestRunning = true;
         try
@@ -78,9 +78,27 @@ public partial class ProfilesViewModel
         {
             _userTestRunning = false;
         }
-        if (_hiddenRecovered)
+        var refresh = _hiddenRecovered;
+        _hiddenRecovered = false;
+        // Custom build: after a delay test, sort the group by delay (fastest first, failed/untested at the end)
+        if (sortByDelay)
         {
-            _hiddenRecovered = false;
+            try
+            {
+                var subId = _config.SubIndexId;
+                await Task.Delay(500);
+                if (await ConfigHandler.SortServers(_config, subId, nameof(EServerColName.DelayVal), true) == 0)
+                {
+                    refresh = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logging.SaveLog(KkTag, ex);
+            }
+        }
+        if (refresh)
+        {
             RxSchedulers.MainThreadScheduler.Schedule(() => { _ = RefreshServers(); });
         }
     }

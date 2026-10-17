@@ -104,6 +104,8 @@ public static class ConfigHandler
         config.MsgUIItem ??= new();
 
         config.UiItem ??= new();
+        // Custom build: double-click a node to make it active
+        config.UiItem.DoubleClick2Activate = true;
         config.UiItem.MainColumnItem ??= [];
         config.UiItem.WindowSizeItem ??= [];
 

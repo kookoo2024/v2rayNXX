@@ -853,7 +853,7 @@ public partial class ProfilesViewModel : MyReactiveObject
         var task = _speedtestService?.RunLoop(actionType, lstSelected);
         if (task != null)
         {
-            _ = WatchUserTest(task);
+            _ = WatchUserTest(task, actionType is ESpeedActionType.Realping or ESpeedActionType.Tcping or ESpeedActionType.Mixedtest);
         }
     }
 
