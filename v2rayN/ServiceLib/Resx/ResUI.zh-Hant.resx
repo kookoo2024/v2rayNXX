@@ -1903,4 +1903,28 @@
   <data name="TbSortingProcess" xml:space="preserve">
     <value>行程</value>
   </data>
+  <data name="FavGroupName" xml:space="preserve">
+    <value>我的收藏</value>
+  </data>
+  <data name="FavSourceManual" xml:space="preserve">
+    <value>手動新增</value>
+  </data>
+  <data name="menuAddToFavorites" xml:space="preserve">
+    <value>★ 加入我的收藏（永久）</value>
+  </data>
+  <data name="menuSyncFavorite" xml:space="preserve">
+    <value>從原訂閱同步收藏節點</value>
+  </data>
+  <data name="FavAddResult" xml:space="preserve">
+    <value>已收藏 {0} 個，跳過重複 {1} 個，不支援 {2} 個</value>
+  </data>
+  <data name="FavSyncResult" xml:space="preserve">
+    <value>已同步 {0} 個，原訂閱中未找到 {1} 個（保持原樣）</value>
+  </data>
+  <data name="FavSyncOnlyInFav" xml:space="preserve">
+    <value>請在「我的收藏」分組裡使用此功能</value>
+  </data>
+  <data name="LvFavInfo" xml:space="preserve">
+    <value>來源 / 收藏日期</value>
+  </data>
 </root>

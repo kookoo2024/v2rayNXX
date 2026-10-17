@@ -5417,5 +5417,61 @@ namespace ServiceLib.Resx {
                 return ResourceManager.GetString("UpgradeAppNotExistTip", resourceCulture);
             }
         }
+    
+        /// <summary>My Favorites</summary>
+        public static string FavGroupName {
+            get {
+                return ResourceManager.GetString("FavGroupName", resourceCulture);
+            }
+        }
+
+        /// <summary>Manual</summary>
+        public static string FavSourceManual {
+            get {
+                return ResourceManager.GetString("FavSourceManual", resourceCulture);
+            }
+        }
+
+        /// <summary>★ Add to My Favorites (permanent)</summary>
+        public static string menuAddToFavorites {
+            get {
+                return ResourceManager.GetString("menuAddToFavorites", resourceCulture);
+            }
+        }
+
+        /// <summary>Sync favorite from source subscription</summary>
+        public static string menuSyncFavorite {
+            get {
+                return ResourceManager.GetString("menuSyncFavorite", resourceCulture);
+            }
+        }
+
+        /// <summary>Favorited {0}, skipped {1} duplicate(s), {2} unsupported</summary>
+        public static string FavAddResult {
+            get {
+                return ResourceManager.GetString("FavAddResult", resourceCulture);
+            }
+        }
+
+        /// <summary>Synced {0}, not found in source subscription {1} (kept unchanged)</summary>
+        public static string FavSyncResult {
+            get {
+                return ResourceManager.GetString("FavSyncResult", resourceCulture);
+            }
+        }
+
+        /// <summary>Please use this inside the My Favorites group</summary>
+        public static string FavSyncOnlyInFav {
+            get {
+                return ResourceManager.GetString("FavSyncOnlyInFav", resourceCulture);
+            }
+        }
+
+        /// <summary>Source / Favorited</summary>
+        public static string LvFavInfo {
+            get {
+                return ResourceManager.GetString("LvFavInfo", resourceCulture);
+            }
+        }
     }
 }

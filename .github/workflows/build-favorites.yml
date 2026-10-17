@@ -1,0 +1,48 @@
+name: build Windows (permanent favorites)
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feature/permanent-favorites
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        submodules: 'recursive'
+        fetch-depth: '0'
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 10.0.x
+
+    - name: Build v2rayN (win-x64)
+      working-directory: ./v2rayN
+      run: dotnet publish ./v2rayN/v2rayN.csproj -c Release -r win-x64 -p:SelfContained=true -p:EnableWindowsTargeting=true -o "$GITHUB_WORKSPACE/v2rayN-windows-64"
+
+    - name: Package with cores
+      run: |
+        wget -nv -O v2rayN-windows-64.zip "https://github.com/2dust/v2rayN-core-bin/raw/refs/heads/master/v2rayN-windows-64.zip"
+        7z a -tZip v2rayN-windows-64.zip v2rayN-windows-64 -mx1
+        mv v2rayN-windows-64.zip v2rayN-fav-windows-64.zip
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: v2rayN-fav-windows-64
+        path: v2rayN-fav-windows-64.zip
+
+    - name: Publish release
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        TAG="fav-${{ github.run_number }}"
+        gh release create "$TAG" v2rayN-fav-windows-64.zip --target "${{ github.sha }}" --title "v2rayN 永久收藏版 #${{ github.run_number }}" --notes "Windows 64位，含核心。解压后运行 v2rayN.exe。" --prerelease

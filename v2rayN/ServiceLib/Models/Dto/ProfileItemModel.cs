@@ -13,6 +13,9 @@ public partial class ProfileItemModel : ReactiveObject
     public string StreamSecurity { get; set; }
     public string Subid { get; set; }
     public string SubRemarks { get; set; }
+    public string? FavSource { get; set; }
+    public long FavTime { get; set; }
+    public string FavInfo { get; set; } = string.Empty;
     public int Sort { get; set; }
 
     [Reactive]

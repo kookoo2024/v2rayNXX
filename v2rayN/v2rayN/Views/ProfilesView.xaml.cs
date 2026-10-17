@@ -51,6 +51,8 @@ public partial class ProfilesView
             this.BindCommand(ViewModel, vm => vm.RemoveServerCmd, v => v.menuRemoveServer).DisposeWith(disposables);
             this.BindCommand(ViewModel, vm => vm.RemoveDuplicateServerCmd, v => v.menuRemoveDuplicateServer).DisposeWith(disposables);
             this.BindCommand(ViewModel, vm => vm.CopyServerCmd, v => v.menuCopyServer).DisposeWith(disposables);
+            this.BindCommand(ViewModel, vm => vm.AddToFavoritesCmd, v => v.menuAddToFavorites).DisposeWith(disposables);
+            this.BindCommand(ViewModel, vm => vm.SyncFavoriteCmd, v => v.menuSyncFavorite).DisposeWith(disposables);
             this.BindCommand(ViewModel, vm => vm.SetDefaultServerCmd, v => v.menuSetDefaultServer).DisposeWith(disposables);
             this.BindCommand(ViewModel, vm => vm.ShareServerCmd, v => v.menuShareServer).DisposeWith(disposables);
             this.BindCommand(ViewModel, vm => vm.GenGroupAllServerCmd, v => v.menuGenGroupAllServer).DisposeWith(disposables);
@@ -225,6 +227,10 @@ public partial class ProfilesView
             {
                 case Key.A:
                     menuSelectAll_Click(null, null);
+                    break;
+
+                case Key.B:
+                    ViewModel?.AddToFavorites();
                     break;
 
                 case Key.C:

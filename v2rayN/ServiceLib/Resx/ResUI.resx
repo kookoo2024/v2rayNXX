@@ -1905,4 +1905,28 @@ The "Get Certificate" action may fail if a self-signed certificate is used or if
   <data name="menuAddMasqueServer" xml:space="preserve">
     <value>Add [MASQUE]</value>
   </data>
+  <data name="FavGroupName" xml:space="preserve">
+    <value>My Favorites</value>
+  </data>
+  <data name="FavSourceManual" xml:space="preserve">
+    <value>Manual</value>
+  </data>
+  <data name="menuAddToFavorites" xml:space="preserve">
+    <value>★ Add to My Favorites (permanent)</value>
+  </data>
+  <data name="menuSyncFavorite" xml:space="preserve">
+    <value>Sync favorite from source subscription</value>
+  </data>
+  <data name="FavAddResult" xml:space="preserve">
+    <value>Favorited {0}, skipped {1} duplicate(s), {2} unsupported</value>
+  </data>
+  <data name="FavSyncResult" xml:space="preserve">
+    <value>Synced {0}, not found in source subscription {1} (kept unchanged)</value>
+  </data>
+  <data name="FavSyncOnlyInFav" xml:space="preserve">
+    <value>Please use this inside the My Favorites group</value>
+  </data>
+  <data name="LvFavInfo" xml:space="preserve">
+    <value>Source / Favorited</value>
+  </data>
 </root>

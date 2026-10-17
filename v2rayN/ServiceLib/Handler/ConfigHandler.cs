@@ -1192,6 +1192,12 @@ public static class ConfigHandler
             lstProfile.Reverse();
         }
 
+        // Permanent favorites are never removed by dedup unless deduplicating inside the favorites group itself
+        if (subId != FavSubId)
+        {
+            lstProfile = lstProfile.Where(t => t.Subid != FavSubId).ToList();
+        }
+
         foreach (var item in lstProfile)
         {
             if (item.IsComplex())
@@ -1620,6 +1626,11 @@ public static class ConfigHandler
     {
         var lstModel = await AppManager.Instance.ProfileModels(subid, "");
         lstModel.RemoveAll(t => t.ConfigType.IsComplexType());
+        // Keep permanent favorites unless cleaning inside the favorites group itself
+        if (subid != FavSubId)
+        {
+            lstModel.RemoveAll(t => t.Subid == FavSubId);
+        }
         if (lstModel is { Count: <= 0 })
         {
             return -1;
@@ -2337,6 +2348,210 @@ public static class ConfigHandler
     }
 
     #endregion Sub & Group
+
+    #region Permanent Favorites
+
+    /// <summary>
+    /// Fixed id of the local, never-updating "My Favorites" group.
+    /// A subscription item with an empty Url is skipped by subscription updates,
+    /// so profiles stored in it survive subscription updates and deletions.
+    /// </summary>
+    public const string FavSubId = "kk_permanent_favorites";
+
+    public static string GetFavInfo(string? favSource, long favTime)
+    {
+        if (favSource.IsNullOrEmpty() && favTime <= 0)
+        {
+            return string.Empty;
+        }
+        var date = favTime > 0
+            ? DateTimeOffset.FromUnixTimeSeconds(favTime).ToLocalTime().ToString("yyyy-MM-dd")
+            : string.Empty;
+        if (favSource.IsNullOrEmpty())
+        {
+            return date;
+        }
+        return date.IsNullOrEmpty() ? favSource! : $"{favSource} · {date}";
+    }
+
+    public static async Task<SubItem> GetOrCreateFavSubItem(Config config)
+    {
+        var item = await AppManager.Instance.GetSubItem(FavSubId);
+        if (item != null)
+        {
+            return item;
+        }
+        item = new SubItem
+        {
+            Id = FavSubId,
+            Remarks = ResUI.FavGroupName,
+            Url = string.Empty,
+            MoreUrl = string.Empty,
+            Enabled = true,
+            Sort = 0,
+            Memo = "Permanent favorites (local, never auto-updated)"
+        };
+        await SQLiteHelper.Instance.ReplaceAsync(item);
+        return item;
+    }
+
+    private static bool IsSameNode(ProfileItem a, ProfileItem b)
+    {
+        return a.ConfigType == b.ConfigType
+            && string.Equals(a.Address?.Trim(), b.Address?.Trim(), StringComparison.OrdinalIgnoreCase)
+            && a.Port == b.Port;
+    }
+
+    /// <summary>
+    /// Copy the selected profiles into the permanent favorites group.
+    /// </summary>
+    /// <returns>(added, duplicated, unsupported)</returns>
+    public static async Task<(int, int, int)> AddToFavorites(Config config, List<ProfileItem> lstProfile)
+    {
+        var added = 0;
+        var duplicated = 0;
+        var unsupported = 0;
+
+        await GetOrCreateFavSubItem(config);
+        var favs = await AppManager.Instance.ProfileItems(FavSubId) ?? [];
+        var now = DateTimeOffset.Now.ToUnixTimeSeconds();
+
+        foreach (var it in lstProfile)
+        {
+            var item = await AppManager.Instance.GetProfileItem(it.IndexId);
+            if (item is null)
+            {
+                continue;
+            }
+            if (item.Subid == FavSubId)
+            {
+                duplicated++;
+                continue;
+            }
+            if (item.ConfigType.IsGroupType())
+            {
+                unsupported++;
+                continue;
+            }
+            if (!item.ConfigType.IsComplexType() && favs.Any(f => IsSameNode(f, item)))
+            {
+                duplicated++;
+                continue;
+            }
+
+            var sub = item.Subid.IsNullOrEmpty() ? null : await AppManager.Instance.GetSubItem(item.Subid);
+
+            var fav = JsonUtils.DeepCopy(item);
+            fav.IndexId = string.Empty;
+            fav.Subid = FavSubId;
+            fav.IsSub = false;
+            fav.FavSource = sub?.Remarks ?? ResUI.FavSourceManual;
+            fav.FavSourceSubid = item.Subid;
+            fav.FavTime = now;
+
+            if (fav.ConfigType == EConfigType.Custom)
+            {
+                fav.Address = Utils.GetConfigPath(fav.Address);
+                if (await AddCustomServer(config, fav, false) != 0)
+                {
+                    continue;
+                }
+                // AddCustomServer may reset Subid; enforce favorites group
+                var saved = await AppManager.Instance.GetProfileItem(fav.IndexId);
+                if (saved != null)
+                {
+                    saved.Subid = FavSubId;
+                    saved.IsSub = false;
+                    saved.FavSource = fav.FavSource;
+                    saved.FavSourceSubid = fav.FavSourceSubid;
+                    saved.FavTime = fav.FavTime;
+                    await SQLiteHelper.Instance.UpdateAsync(saved);
+                }
+            }
+            else if (fav.ConfigType == EConfigType.Outbound)
+            {
+                fav.Address = Utils.GetConfigPath(fav.Address);
+                if (await AddCustomOutboundServer(config, fav, false) != 0)
+                {
+                    continue;
+                }
+                var saved = await AppManager.Instance.GetProfileItem(fav.IndexId);
+                if (saved != null)
+                {
+                    saved.Subid = FavSubId;
+                    saved.IsSub = false;
+                    saved.FavSource = fav.FavSource;
+                    saved.FavSourceSubid = fav.FavSourceSubid;
+                    saved.FavTime = fav.FavTime;
+                    await SQLiteHelper.Instance.UpdateAsync(saved);
+                }
+            }
+            else
+            {
+                await AddServerCommon(config, fav, true);
+            }
+            favs.Add(fav);
+            added++;
+        }
+
+        return (added, duplicated, unsupported);
+    }
+
+    /// <summary>
+    /// Refresh favorites from their source subscription, matched by protocol + address + port,
+    /// then by remarks. The favorite keeps its own name, id, sort and favorite info.
+    /// </summary>
+    /// <returns>(synced, notFound)</returns>
+    public static async Task<(int, int)> SyncFavoritesFromSource(Config config, List<ProfileItem> lstProfile)
+    {
+        var synced = 0;
+        var notFound = 0;
+
+        foreach (var it in lstProfile)
+        {
+            var fav = await AppManager.Instance.GetProfileItem(it.IndexId);
+            if (fav is null || fav.Subid != FavSubId)
+            {
+                continue;
+            }
+            if (fav.FavSourceSubid.IsNullOrEmpty() || fav.FavSourceSubid == FavSubId)
+            {
+                notFound++;
+                continue;
+            }
+
+            var sources = await AppManager.Instance.ProfileItems(fav.FavSourceSubid) ?? [];
+            var src = sources.FirstOrDefault(t => IsSameNode(t, fav))
+                      ?? sources.FirstOrDefault(t => t.ConfigType == fav.ConfigType && t.Remarks == fav.Remarks);
+            if (src is null || src.ConfigType.IsGroupType())
+            {
+                notFound++;
+                continue;
+            }
+
+            var updated = JsonUtils.DeepCopy(src);
+            updated.IndexId = fav.IndexId;
+            updated.Subid = FavSubId;
+            updated.IsSub = false;
+            updated.Remarks = fav.Remarks;
+            updated.FavSource = fav.FavSource;
+            updated.FavSourceSubid = fav.FavSourceSubid;
+            updated.FavTime = fav.FavTime;
+
+            if (updated.ConfigType is EConfigType.Custom or EConfigType.Outbound)
+            {
+                notFound++;
+                continue;
+            }
+            await AddServerCommon(config, updated, true);
+            synced++;
+        }
+
+        return (synced, notFound);
+    }
+
+    #endregion Permanent Favorites
+
 
     #region Routing
 

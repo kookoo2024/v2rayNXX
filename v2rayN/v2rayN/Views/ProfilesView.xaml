@@ -132,6 +132,16 @@
                             Header="{x:Static resx:ResUI.menuEditServer}"
                             InputGestureText="Ctrl+D" />
                         <MenuItem
+                            x:Name="menuAddToFavorites"
+                            Height="{StaticResource MenuItemHeight}"
+                            Header="{x:Static resx:ResUI.menuAddToFavorites}"
+                            InputGestureText="Ctrl+B" />
+                        <MenuItem
+                            x:Name="menuSyncFavorite"
+                            Height="{StaticResource MenuItemHeight}"
+                            Header="{x:Static resx:ResUI.menuSyncFavorite}" />
+                        <Separator />
+                        <MenuItem
                             x:Name="menuCopyServer"
                             Height="{StaticResource MenuItemHeight}"
                             Header="{x:Static resx:ResUI.menuCopyServer}" />
@@ -315,6 +325,11 @@
                         Binding="{Binding SubRemarks}"
                         ExName="SubRemarks"
                         Header="{x:Static resx:ResUI.LvSubscription}" />
+                    <base:MyDGTextColumn
+                        Width="160"
+                        Binding="{Binding FavInfo}"
+                        ExName="FavInfo"
+                        Header="{x:Static resx:ResUI.LvFavInfo}" />
                     <base:MyDGTextColumn
                         Width="100"
                         Binding="{Binding DelayVal}"

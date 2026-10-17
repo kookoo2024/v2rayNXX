@@ -160,6 +160,11 @@ public class ProfileItem
     public ECoreType? CoreType { get; set; }
     public int ConfigVersion { get; set; }
     public string Subid { get; set; }
+
+    // Permanent favorites: source subscription name/id and time when favorited
+    public string? FavSource { get; set; }
+    public string? FavSourceSubid { get; set; }
+    public long FavTime { get; set; }
     public bool IsSub { get; set; } = true;
     public int? PreSocksPort { get; set; }
     public bool DisplayLog { get; set; } = true;

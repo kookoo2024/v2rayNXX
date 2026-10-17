@@ -52,6 +52,8 @@ public partial class ProfilesViewModel : MyReactiveObject
     public ReactiveCommand<RxVoid, RxVoid> RemoveServerCmd { get; }
     public ReactiveCommand<RxVoid, RxVoid> RemoveDuplicateServerCmd { get; }
     public ReactiveCommand<RxVoid, RxVoid> CopyServerCmd { get; }
+    public ReactiveCommand<RxVoid, RxVoid> AddToFavoritesCmd { get; }
+    public ReactiveCommand<RxVoid, RxVoid> SyncFavoriteCmd { get; }
     public ReactiveCommand<RxVoid, RxVoid> SetDefaultServerCmd { get; }
     public ReactiveCommand<RxVoid, RxVoid> ShareServerCmd { get; }
     public ReactiveCommand<RxVoid, RxVoid> GenGroupAllServerCmd { get; }
@@ -129,6 +131,14 @@ public partial class ProfilesViewModel : MyReactiveObject
         CopyServerCmd = ReactiveCommand.CreateFromTask(async () =>
         {
             await CopyServer();
+        }, canEditRemove);
+        AddToFavoritesCmd = ReactiveCommand.CreateFromTask(async () =>
+        {
+            await AddToFavorites();
+        }, canEditRemove);
+        SyncFavoriteCmd = ReactiveCommand.CreateFromTask(async () =>
+        {
+            await SyncFavorite();
         }, canEditRemove);
         SetDefaultServerCmd = ReactiveCommand.CreateFromTask(async () =>
         {
@@ -420,6 +430,9 @@ public partial class ProfilesViewModel : MyReactiveObject
                         StreamSecurity = t.StreamSecurity,
                         Subid = t.Subid,
                         SubRemarks = t.SubRemarks,
+                        FavSource = t.FavSource,
+                        FavTime = t.FavTime,
+                        FavInfo = ConfigHandler.GetFavInfo(t.FavSource, t.FavTime),
                         IsActive = t.IndexId == _config.IndexId,
                         Sort = t33?.Sort ?? 0,
                         Delay = t33?.Delay ?? 0,
@@ -555,6 +568,41 @@ public partial class ProfilesViewModel : MyReactiveObject
             await RefreshServers();
             NoticeManager.Instance.Enqueue(ResUI.OperationSuccess);
         }
+    }
+
+    public async Task AddToFavorites()
+    {
+        var lstSelected = await GetProfileItems(true);
+        if (lstSelected == null)
+        {
+            return;
+        }
+        var (added, duplicated, unsupported) = await ConfigHandler.AddToFavorites(_config, lstSelected);
+        await RefreshSubscriptions();
+        await RefreshServers();
+        NoticeManager.Instance.Enqueue(string.Format(ResUI.FavAddResult, added, duplicated, unsupported));
+    }
+
+    private async Task SyncFavorite()
+    {
+        if (_config.SubIndexId != ConfigHandler.FavSubId)
+        {
+            NoticeManager.Instance.Enqueue(ResUI.FavSyncOnlyInFav);
+            return;
+        }
+        var lstSelected = await GetProfileItems(true);
+        if (lstSelected == null)
+        {
+            return;
+        }
+        var exists = lstSelected.Exists(t => t.IndexId == _config.IndexId);
+        var (synced, notFound) = await ConfigHandler.SyncFavoritesFromSource(_config, lstSelected);
+        await RefreshServers();
+        if (exists && synced > 0)
+        {
+            Reload();
+        }
+        NoticeManager.Instance.Enqueue(string.Format(ResUI.FavSyncResult, synced, notFound));
     }
 
     public async Task SetDefaultServer()

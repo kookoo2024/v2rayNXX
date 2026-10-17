@@ -209,6 +209,8 @@ public sealed class AppManager
                            ,a.Network
                            ,a.StreamSecurity
                            ,a.Subid
+                           ,a.FavSource
+                           ,a.FavTime
                            ,b.remarks as subRemarks
                         from ProfileItem a
                         left join SubItem b on a.subid = b.id
