@@ -140,6 +140,14 @@
                             x:Name="menuSyncFavorite"
                             Height="{StaticResource MenuItemHeight}"
                             Header="{x:Static resx:ResUI.menuSyncFavorite}" />
+                        <MenuItem
+                            x:Name="menuToggleAutoSwitch"
+                            Height="{StaticResource MenuItemHeight}"
+                            Header="收藏自动体检 / 失效自动切换" />
+                        <MenuItem
+                            x:Name="menuToggleShowFailed"
+                            Height="{StaticResource MenuItemHeight}"
+                            Header="显示失效节点（-1）" />
                         <Separator />
                         <MenuItem
                             x:Name="menuCopyServer"

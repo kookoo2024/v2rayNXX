@@ -77,6 +77,14 @@ public partial class ProfilesViewModel : MyReactiveObject
     public ReactiveCommand<RxVoid, RxVoid> SortServerResultCmd { get; }
     public ReactiveCommand<RxVoid, RxVoid> RemoveInvalidServerResultCmd { get; }
     public ReactiveCommand<RxVoid, RxVoid> FastRealPingCmd { get; }
+    public ReactiveCommand<RxVoid, RxVoid> ToggleShowFailedCmd { get; }
+    public ReactiveCommand<RxVoid, RxVoid> ToggleAutoSwitchCmd { get; }
+
+    [Reactive]
+    public partial bool ShowFailedChecked { get; set; }
+
+    [Reactive]
+    public partial bool AutoSwitchChecked { get; set; }
 
     //servers export
     public ReactiveCommand<RxVoid, RxVoid> Export2ClientConfigCmd { get; }
@@ -212,6 +220,14 @@ public partial class ProfilesViewModel : MyReactiveObject
         {
             await RemoveInvalidServerResult();
         });
+        ToggleShowFailedCmd = ReactiveCommand.CreateFromTask(async () =>
+        {
+            await ToggleShowFailed();
+        });
+        ToggleAutoSwitchCmd = ReactiveCommand.CreateFromTask(async () =>
+        {
+            await ToggleAutoSwitch();
+        });
         //servers export
         Export2ClientConfigCmd = ReactiveCommand.CreateFromTask(async () =>
         {
@@ -264,6 +280,11 @@ public partial class ProfilesViewModel : MyReactiveObject
 
     private async Task Init()
     {
+        KkOptions.Load();
+        ShowFailedChecked = KkOptions.ShowFailed;
+        AutoSwitchChecked = KkOptions.AutoSwitch;
+        StartFavGuard();
+
         SelectedProfile = new();
         SelectedSub = new();
         SelectedMoveToGroup = new();
@@ -292,6 +313,11 @@ public partial class ProfilesViewModel : MyReactiveObject
         var item = ProfileItems.FirstOrDefault(it => it.IndexId == result.IndexId);
         if (item == null)
         {
+            // A hidden failed node passed the test again: bring it back when the test ends
+            if (result.Delay.ToInt() > 0 && _hiddenTestIds.Contains(result.IndexId))
+            {
+                _hiddenRecovered = true;
+            }
             return;
         }
 
@@ -485,7 +511,8 @@ public partial class ProfilesViewModel : MyReactiveObject
 
     private bool ShouldHideFailed(ProfileItemModel item)
     {
-        return _config.SubIndexId != ConfigHandler.FavSubId
+        return !KkOptions.ShowFailed
+               && _config.SubIndexId != ConfigHandler.FavSubId
                && item.Subid != ConfigHandler.FavSubId
                && item.IndexId != _config.IndexId;
     }
@@ -802,6 +829,8 @@ public partial class ProfilesViewModel : MyReactiveObject
             }
 
             lstSelected = JsonUtils.Deserialize<List<ProfileItem>>(JsonUtils.Serialize(ProfileItems?.OrderBy(t => t.Sort)));
+            // Custom build: also retest the hidden failed (-1) nodes of this group so recovered ones come back
+            lstSelected = await AppendHiddenFailed(lstSelected);
         }
         else
         {
@@ -821,7 +850,11 @@ public partial class ProfilesViewModel : MyReactiveObject
             });
             await Task.CompletedTask;
         });
-        _speedtestService?.RunLoop(actionType, lstSelected);
+        var task = _speedtestService?.RunLoop(actionType, lstSelected);
+        if (task != null)
+        {
+            _ = WatchUserTest(task);
+        }
     }
 
     public void ServerSpeedtestStop()

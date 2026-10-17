@@ -28,6 +28,13 @@ jobs:
       working-directory: ./v2rayN
       run: dotnet publish ./v2rayN/v2rayN.csproj -c Release -r win-x64 -p:SelfContained=true -p:EnableWindowsTargeting=true -o "$GITHUB_WORKSPACE/v2rayN-windows-64"
 
+    - name: Build AmazTool (upgrade helper) and write build number
+      working-directory: ./v2rayN
+      run: |
+        dotnet publish ./AmazTool/AmazTool.csproj -c Release -r win-x64 -p:SelfContained=true -p:PublishTrimmed=true -p:EnableWindowsTargeting=true -o "$GITHUB_WORKSPACE/v2rayN-windows-64"
+        echo "${{ github.run_number }}" > "$GITHUB_WORKSPACE/v2rayN-windows-64/fav-version.txt"
+        find "$GITHUB_WORKSPACE/v2rayN-windows-64" -type f -name '*.pdb' -delete
+
     - name: Package with cores
       run: |
         wget -nv -O v2rayN-windows-64.zip "https://github.com/2dust/v2rayN-core-bin/raw/refs/heads/master/v2rayN-windows-64.zip"

@@ -246,6 +246,10 @@
                                     x:Name="menuCheckUpdate"
                                     Height="{StaticResource MenuItemHeight}"
                                     Header="{x:Static resx:ResUI.menuCheckUpdate}" />
+                                <MenuItem
+                                    x:Name="menuFavUpdate"
+                                    Height="{StaticResource MenuItemHeight}"
+                                    Header="检查定制版更新" />
                             </MenuItem>
                         </Menu>
                         <Separator Visibility="Collapsed" />

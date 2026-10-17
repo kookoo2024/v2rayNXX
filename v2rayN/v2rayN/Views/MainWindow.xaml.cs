@@ -29,6 +29,8 @@ public partial class MainWindow
         menuCheckUpdate.Click += MenuCheckUpdate_Click;
         btnNewUpdate.Click += MenuCheckUpdate_Click;
         menuBackupAndRestore.Click += MenuBackupAndRestore_Click;
+        menuFavUpdate.Click += MenuFavUpdate_Click;
+        StartFavUpdateCheck();
 
         pbTheme.Content ??= new ThemeSettingView();
 

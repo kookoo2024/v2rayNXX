@@ -58,6 +58,10 @@ public partial class ProfilesView
             this.BindCommand(ViewModel, vm => vm.CopyServerCmd, v => v.menuCopyServer).DisposeWith(disposables);
             this.BindCommand(ViewModel, vm => vm.AddToFavoritesCmd, v => v.menuAddToFavorites).DisposeWith(disposables);
             this.BindCommand(ViewModel, vm => vm.SyncFavoriteCmd, v => v.menuSyncFavorite).DisposeWith(disposables);
+            this.BindCommand(ViewModel, vm => vm.ToggleShowFailedCmd, v => v.menuToggleShowFailed).DisposeWith(disposables);
+            this.OneWayBind(ViewModel, vm => vm.ShowFailedChecked, v => v.menuToggleShowFailed.IsChecked).DisposeWith(disposables);
+            this.BindCommand(ViewModel, vm => vm.ToggleAutoSwitchCmd, v => v.menuToggleAutoSwitch).DisposeWith(disposables);
+            this.OneWayBind(ViewModel, vm => vm.AutoSwitchChecked, v => v.menuToggleAutoSwitch.IsChecked).DisposeWith(disposables);
             this.BindCommand(ViewModel, vm => vm.SetDefaultServerCmd, v => v.menuSetDefaultServer).DisposeWith(disposables);
             this.BindCommand(ViewModel, vm => vm.ShareServerCmd, v => v.menuShareServer).DisposeWith(disposables);
             this.BindCommand(ViewModel, vm => vm.GenGroupAllServerCmd, v => v.menuGenGroupAllServer).DisposeWith(disposables);
