@@ -56,10 +56,8 @@ public sealed class CoreInfoManager
 
         if (RuntimeInformation.ProcessArchitecture != Architecture.X86)
         {
-            if (IsCheckUpdateSupported(ECoreType.v2rayN))
-            {
-                lst.Add(ECoreType.v2rayN);
-            }
+            // Custom build (permanent favorites): self-update of v2rayN is disabled,
+            // otherwise it would be replaced by the official build. Cores/geo files still update.
 
             if (!(Utils.IsWindows() && Environment.OSVersion.Version.Major < 10))
             {

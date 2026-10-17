@@ -226,6 +226,11 @@
                         Header="{x:Static resx:ResUI.menuCopyProxyCmdToClipboard}" />
                     <Separator />
                     <MenuItem
+                        x:Name="menuToggleSpeedFloat"
+                        Height="{StaticResource MenuItemHeight}"
+                        Header="{x:Static resx:ResUI.menuToggleSpeedFloat}" />
+                    <Separator />
+                    <MenuItem
                         x:Name="menuExit"
                         Height="{StaticResource MenuItemHeight}"
                         Header="{x:Static resx:ResUI.menuExit}" />

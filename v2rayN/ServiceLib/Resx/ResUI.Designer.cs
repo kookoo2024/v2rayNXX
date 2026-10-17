@@ -5473,5 +5473,11 @@ namespace ServiceLib.Resx {
                 return ResourceManager.GetString("LvFavInfo", resourceCulture);
             }
         }
+    
+        public static string menuToggleSpeedFloat {
+            get {
+                return ResourceManager.GetString("menuToggleSpeedFloat", resourceCulture);
+            }
+        }
     }
 }

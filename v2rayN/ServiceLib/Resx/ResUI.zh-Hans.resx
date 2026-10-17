@@ -1921,4 +1921,7 @@
   <data name="LvFavInfo" xml:space="preserve">
     <value>来源 / 收藏日期</value>
   </data>
+  <data name="menuToggleSpeedFloat" xml:space="preserve">
+    <value>显示/隐藏悬浮网速</value>
+  </data>
 </root>

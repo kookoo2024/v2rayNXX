@@ -1929,4 +1929,7 @@ The "Get Certificate" action may fail if a self-signed certificate is used or if
   <data name="LvFavInfo" xml:space="preserve">
     <value>Source / Favorited</value>
   </data>
+  <data name="menuToggleSpeedFloat" xml:space="preserve">
+    <value>Show/Hide floating speed</value>
+  </data>
 </root>

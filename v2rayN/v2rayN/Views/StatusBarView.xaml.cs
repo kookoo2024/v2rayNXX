@@ -12,6 +12,8 @@ public partial class StatusBarView
         _config = AppManager.Instance.Config;
 
         menuExit.Click += menuExit_Click;
+        menuToggleSpeedFloat.Click += (_, _) => SpeedFloatWindow.Toggle();
+        Loaded += (_, _) => SpeedFloatWindow.ShowDefault();
         txtRunningServerDisplay.PreviewMouseDown += txtRunningInfoDisplay_MouseDoubleClick;
         txtRunningInfoDisplay.PreviewMouseDown += txtRunningInfoDisplay_MouseDoubleClick;
 
@@ -87,6 +89,7 @@ public partial class StatusBarView
 
     private async void menuExit_Click(object sender, RoutedEventArgs e)
     {
+        SpeedFloatWindow.CloseInstance();
         tbNotify.Dispose();
         await AppManager.Instance.AppExitAsync(true);
     }

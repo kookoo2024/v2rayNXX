@@ -13,7 +13,7 @@
     Title="v2rayN"
     Width="1200"
     Height="800"
-    MinWidth="800"
+    MinWidth="560"
     x:TypeArguments="vms:MainWindowViewModel"
     Icon="/Resources/v2rayN.ico"
     ResizeMode="CanResizeWithGrip"
@@ -242,6 +242,10 @@
                                     x:Name="menuOpenTheFileLocation"
                                     Height="{StaticResource MenuItemHeight}"
                                     Header="{x:Static resx:ResUI.menuOpenTheFileLocation}" />
+                                <MenuItem
+                                    x:Name="menuCheckUpdate"
+                                    Height="{StaticResource MenuItemHeight}"
+                                    Header="{x:Static resx:ResUI.menuCheckUpdate}" />
                             </MenuItem>
                         </Menu>
                         <Separator Visibility="Collapsed" />
@@ -259,7 +263,6 @@
                                         <TextBlock Text="{x:Static resx:ResUI.menuHelp}" />
                                     </StackPanel>
                                 </MenuItem.Header>
-                                <MenuItem x:Name="menuCheckUpdate" Header="{x:Static resx:ResUI.menuCheckUpdate}" />
                                 <Separator Margin="-40,5" />
                             </MenuItem>
                         </Menu>

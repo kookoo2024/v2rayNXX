@@ -22,6 +22,8 @@ public partial class ProfilesView
         btnAutofitColumnWidth.Click += BtnAutofitColumnWidth_Click;
         txtServerFilter.PreviewKeyDown += TxtServerFilter_PreviewKeyDown;
         lstProfiles.PreviewKeyDown += LstProfiles_PreviewKeyDown;
+        lstProfiles.IsVisibleChanged += (_, _) => Dispatcher.BeginInvoke(FitWindowWidth, DispatcherPriority.ContextIdle);
+        lstProfiles.Loaded += (_, _) => Dispatcher.BeginInvoke(FitWindowWidth, DispatcherPriority.ContextIdle);
         lstProfiles.SelectionChanged += LstProfiles_SelectionChanged;
         lstProfiles.LoadingRow += LstProfiles_LoadingRow;
         menuSelectAll.Click += menuSelectAll_Click;
@@ -302,6 +304,50 @@ public partial class ProfilesView
     private void BtnAutofitColumnWidth_Click(object sender, RoutedEventArgs e)
     {
         AutofitColumnWidth();
+    }
+
+    private bool _windowFitted;
+
+    /// <summary>
+    /// Custom build: size the main window to the node list (compact), once per start.
+    /// </summary>
+    private void FitWindowWidth()
+    {
+        try
+        {
+            if (_windowFitted || _config.UiItem.MainGirdOrientation == EGirdOrientation.Horizontal)
+            {
+                return;
+            }
+            var win = Window.GetWindow(this);
+            if (win == null || !win.IsVisible || win.WindowState != WindowState.Normal || !lstProfiles.IsVisible)
+            {
+                return;
+            }
+            double cols = 0;
+            foreach (var c in lstProfiles.Columns)
+            {
+                if (c.Visibility == Visibility.Visible)
+                {
+                    cols += c.ActualWidth;
+                }
+            }
+            if (cols <= 0 || lstProfiles.ActualWidth <= 0 || win.ActualWidth <= 0)
+            {
+                return;
+            }
+            var extra = win.ActualWidth - lstProfiles.ActualWidth;
+            var target = cols + SystemParameters.VerticalScrollBarWidth + 30 + extra;
+            target = Math.Max(win.MinWidth, Math.Min(target, SystemParameters.WorkArea.Width));
+            var center = win.Left + (win.ActualWidth / 2);
+            win.Width = target;
+            win.Left = Math.Max(SystemParameters.WorkArea.Left, Math.Min(center - (target / 2), SystemParameters.WorkArea.Right - target));
+            _windowFitted = true;
+        }
+        catch (Exception ex)
+        {
+            Logging.SaveLog(_tag, ex);
+        }
     }
 
     private void AutofitColumnWidth()

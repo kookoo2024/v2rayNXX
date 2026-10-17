@@ -95,6 +95,8 @@ public static class ConfigHandler
             EnableLegacyProtect = true,
         };
         config.GuiItem ??= new();
+        // Custom build: real-time speed is needed for the floating speed window
+        config.GuiItem.DisplayRealTimeSpeed = true;
         if (!Global.RootCertProviders.Contains(config.GuiItem.RootCertProvider))
         {
             config.GuiItem.RootCertProvider = Global.RootCertProviders.First();

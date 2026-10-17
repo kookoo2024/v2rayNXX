@@ -299,6 +299,12 @@ public partial class ProfilesViewModel : MyReactiveObject
         {
             item.Delay = result.Delay.ToInt();
             item.DelayVal = result.Delay ?? string.Empty;
+            // Keep the list clean: hide nodes whose test failed (-1), except favorites and the active node
+            if (item.Delay == -1 && ShouldHideFailed(item))
+            {
+                ProfileItems.Remove(item);
+                return;
+            }
         }
         if (result.Speed.IsNotEmpty())
         {
@@ -446,7 +452,16 @@ public partial class ProfilesViewModel : MyReactiveObject
                         TotalUp = t22 == null ? "" : Utils.HumanFy(t22.TotalUp)
                     }).OrderBy(t => t.Sort).ToList();
 
+        lstModel = lstModel.Where(t => !(t.Delay == -1 && ShouldHideFailed(t))).ToList();
+
         return lstModel;
+    }
+
+    private bool ShouldHideFailed(ProfileItemModel item)
+    {
+        return _config.SubIndexId != ConfigHandler.FavSubId
+               && item.Subid != ConfigHandler.FavSubId
+               && item.IndexId != _config.IndexId;
     }
 
     #endregion Servers && Groups
